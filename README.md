@@ -67,107 +67,101 @@ flowchart LR
 - 微信集成：wechat-api / wechat-oauth SDK + 微信支付SDK
 - 测试：Vitest (前端) + Jest (后端)
 
+## 项目设置
+
+项目包含两个核心部分：前端应用（根目录）和后端服务（`server/`目录）。
+
+- **前端**: 根目录下的 `package.json` 用于管理前端依赖和脚本。
+- **后端**: `server/` 目录下的 `package.json` 用于管理后端依赖和脚本。
+
+在开始开发前，请分别在根目录和 `server/` 目录下执行 `npm install` (或 `yarn`, `pnpm`) 来安装所需依赖。
+
 ## 目录结构规范
-### 前端项目
+
+### 前端项目 (`src/`)
+前端代码遵循标准的Vue 3 + Vite项目结构，推荐全部使用TypeScript (`.ts`)。
 ```
 src/
-├── api/                # API请求封装
-│   ├── auth/           # 认证相关API
-│   │   ├── index.js    # 接口聚合
-│   │   └── types.ts    # 类型定义
-│   ├── user/           # 用户相关API  
-│   └── wechat/         # 微信相关API
-│       └── config.js   # 微信配置
+├── api/                  # API请求封装
+│   ├── auth/             # 认证相关API
+│   │   ├── index.ts      # 接口聚合
+│   │   └── types.ts      # 类型定义
+│   ├── user-api.ts       # 用户相关API
+│   └── wechat-api.ts     # 微信相关API
 ├── assets/
-│   ├── fonts/          # 字体文件
-│   ├── images/         # 图片资源
-│   └── svg/            # SVG图标
+│   ├── fonts/
+│   ├── images/
+│   └── svg/
 ├── components/
-│   ├── common/         # 全局通用组件
-│   └── business/       # 业务组件
+│   ├── common/           # 全局通用组件 (e.g., AppHeader.vue)
+│   └── business/         # 业务组件 (e.g., UserProfile.vue)
 ├── composables/
-│   ├── useFetch/       # 请求封装
-│   │   ├── index.js
-│   │   └── retry.js    # 重试逻辑
-│   └── useWechat/      # 微信SDK封装
-│       ├── sdk.js      # SDK初始化
-│       └── hooks.js    # 常用钩子
+│   ├── use-fetch.ts      # 请求封装
+│   └── use-wechat-sdk.ts # 微信SDK封装
 ├── router/
-│   ├── index.js        # 路由配置
-│   └── routes.js       # 路由定义
+│   ├── index.ts          # 路由配置
+│   └── routes.ts         # 路由定义
 ├── stores/
-│   ├── auth.js         # 认证状态
-│   └── user.js         # 用户状态
+│   ├── auth-store.ts     # 认证状态
+│   └── user-store.ts     # 用户状态
 ├── styles/
-│   ├── variables.scss  # 样式变量
-│   └── global.scss     # 全局样式
+│   ├── variables.scss
+│   └── global.scss
 ├── utils/
-│   ├── auth.js         # 认证工具
-│   └── request.js      # 请求工具
+│   ├── auth-util.ts      # 认证工具
+│   └── request-util.ts   # 请求工具
 └── views/
-    ├── admin/          # 管理后台页面
-    └── h5/             # 移动端页面
+    ├── AdminView/
+    └── H5View/
 ```
-### 后端项目
+### 后端项目 (`server/`)
+后端代码采用模块化的Express结构。
 ```
 server/
+├── app.js                # 应用入口
 ├── config/
-│   ├── database/
-│   │   ├── mysql.js    # 生产配置
-│   │   └── sqlite.js   # 开发配置
-│   └── wechat/
-│       ├── official.js # 公众号配置
-│       └── payment.js  # 支付配置(保留)
+│   ├── db-config.js      # 数据库配置(生产/开发)
+│   └── wechat-config.js  # 微信配置(公众号/支付)
 ├── controllers/
-│   ├── auth.js         # 认证控制器
-│   └── user.js         # 用户控制器
+│   ├── auth-controller.js
+│   └── user-controller.js
 ├── middleware/
-│   ├── auth.js         # 认证中间件
-│   └── error.js        # 错误处理
-├── models/
-│   ├── user.js         # 用户模型
-│   └── menu.js         # 菜单模型
+│   ├── auth-middleware.js
+│   └── error-handler.js
 ├── routes/
-│   ├── api.js          # API路由
-│   └── wechat.js       # 微信路由
+│   ├── index.js          # 路由聚合
+│   ├── api-routes.js     # API路由
+│   └── wechat-routes.js  # 微信回调与消息路由
 ├── services/
-│   ├── auth.js         # 认证服务
-│   └── wechat.js       # 微信服务
+│   ├── auth-service.js
+│   └── user-service.js
 ├── utils/
-│   ├── jwt.js          # JWT工具
-│   └── validator.js    # 验证工具
-└── app.js              # 应用入口
+│   ├── jwt-util.js
+│   └── validator-util.js
+└── wechat/                 # 微信核心业务逻辑
+    ├── callback/           # 授权与支付回调
+    │   ├── auth-callback.js
+    │   └── payment-callback.js
+    ├── menu/               # 菜单管理
+    │   ├── menu-builder.js
+    │   └── menu-config.js
+    └── message/            # 消息处理器
+        ├── event-handler.js
+        └── text-handler.js
 ```
 
 ## 命名规范
 
 ### 文件命名
-
-- 使用kebab-case命名法 (例：user-service.js)
-- Vue组件使用PascalCase (例：UserAvatar.vue)
-- 测试文件添加.test后缀 (例：auth.test.js)
+- **kebab-case**: 所有 `.js`, `.ts`, `.scss` 文件均使用小写横杠连接 (e.g., `user-service.js`, `auth-store.ts`)。
+- **PascalCase**: Vue组件文件使用大驼峰命名 (e.g., `UserAvatar.vue`)。
+- **测试文件**: 在原文件名后添加 `.test` 或 `.spec` (e.g., `user-service.test.js`)。
 
 ### 代码命名
-
-- 变量/函数：camelCase
-- 类名：PascalCase
-- 常量：UPPER_CASE
-- 私有成员：_前缀
-## 微信相关
-```
-wechat/
-├── callback/
-│   ├── auth/           # 授权回调
-│   │   ├── index.js    # 路由入口
-│   │   └── validator.js # 参数验证
-│   └── payment/        # 支付回调(保留目录)
-├── menu/
-│   ├── builder.js      # 菜单构建器
-│   └── config.js       # 菜单配置
-└── message/
-    ├── text.js         # 文本消息处理
-    └── event.js        # 事件消息处理
-```
+- **camelCase**: 变量、函数名。
+- **PascalCase**: 类、类型定义 (Interfaces, Types)。
+- **UPPER_CASE**: 全局常量、枚举值。
+- **_prefix**: 私有或内部成员（约定）。
 
 ## 数据库
 
