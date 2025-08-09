@@ -1,0 +1,24 @@
+{
+  "name": "dcsl-wechat-platform-backend",
+  "version": "1.0.0",
+  "description": "Backend for DC-SL WeChat Platform",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "prisma": "^4.11.0",
+    "@prisma/client": "^4.11.0",
+    "redis": "^4.6.5",
+    "wechat-api": "^1.35.1",
+    "wechat-oauth": "^1.5.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22"
+  }
+}
